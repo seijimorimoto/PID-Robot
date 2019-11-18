@@ -1,14 +1,14 @@
 #include <cmath>
-#include <queue>
 #include "aria.h"
-#define PI 3.14159265
 
-const int BASE_VEL = 50;
+const int BASE_VEL = 100;
 const int DESIRED_DIST = 500;
-const int MAX_HISTORY = 10;
-const double KP = 0.3;
-const double KI = 0.01;
-const double KD = -0.1;
+//const int MAX_HISTORY = 10;
+const double MAX_VEL = 2000;
+const double MIN_VEL = 0;
+const double KP = 0.6;
+const double KI = 0.001;
+const double KD = 0.2;
 
 
 int main(int argc, char **argv)
@@ -36,7 +36,6 @@ int main(int argc, char **argv)
 	int errorPrev = 0;
 	int errorSum = 0;
 	unsigned int distances[4];
-	std::queue<int> errorHistory;
 
 	while (true)
 	{
@@ -73,37 +72,35 @@ int main(int argc, char **argv)
 
 			// Calculate current error.
 			int error = DESIRED_DIST - distanceMin;
-			if (error < -1000) error = -1000;
-
-			// If the previous error is impossible, that means this is the first reading, so we set
-			// the previous error value to 0 (so that the error difference is 0).
-			//errorPrev = (errorPrev >= 5000) ? error : errorPrev;
+			//if (error < -500) error = -500;
 
 			// Calculate the error difference.
 			const int errorDif = error - errorPrev;
 			errorPrev = error;
 
-			// Check if the history of errors is full.
-			if (errorHistory.size() ==  MAX_HISTORY)
+			// Add the error to the accumulated error over time.
+			errorSum += error;
+
+			double pidOutput = KP * error + KI * errorSum + KD * errorDif;
+			std::cout << pidOutput << std::endl;
+			if (BASE_VEL + pidOutput > MAX_VEL)
 			{
-				// Remove the oldest error
-				const int errorOld = errorHistory.front();
-				errorSum = errorSum + error - errorOld;
-				errorHistory.pop();
-				errorHistory.push(error);
+				pidOutput = MAX_VEL - BASE_VEL;
+				errorSum -= error;
 			}
-			else
+			else if (BASE_VEL - pidOutput > MAX_VEL)
 			{
-				errorHistory.push(error);
-				errorSum += error;
+				pidOutput = -1 * (MAX_VEL - BASE_VEL);
+				errorSum -= error;
 			}
 
-			const double pidOutput = KP * error + KI * errorSum + KD * errorDif;
-			int leftVel = BASE_VEL - pidOutput;
-			int rightVel = BASE_VEL + pidOutput;
+			double leftVel = BASE_VEL - pidOutput;
+			double rightVel = BASE_VEL + pidOutput;
 
-			if (leftVel < 0) leftVel = 0;
-			if (rightVel < 0) rightVel = 0;
+			if (leftVel < MIN_VEL) leftVel = MIN_VEL;
+			if (rightVel < MIN_VEL) rightVel = MIN_VEL;
+
+			std::cout << leftVel << " " << rightVel << std::endl;
 			
 			robot.setVel2(leftVel, rightVel);
 		}

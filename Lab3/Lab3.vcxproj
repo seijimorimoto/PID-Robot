@@ -89,12 +89,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files\MobileRobots\ARIA\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Installed Software\MobileRobots\Aria\ARIA 2.9.4 %2832-bit%29\include;C:\Program Files\MobileRobots\ARIA\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\MobileRobots\ARIA\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Installed Software\MobileRobots\Aria\ARIA 2.9.4 %2832-bit%29\lib;C:\Program Files\MobileRobots\ARIA\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>AriaDebugVC14.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
