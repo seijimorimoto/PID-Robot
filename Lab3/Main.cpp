@@ -3,10 +3,9 @@
 
 const int BASE_VEL = 100;
 const int DESIRED_DIST = 500;
-//const int MAX_HISTORY = 10;
 const double MAX_VEL = 2000;
 const double MIN_VEL = 0;
-const double KP = 0.4;
+const double KP = 0.3;
 const double KI = 0.0005;
 const double KD = 0.1;
 
@@ -84,7 +83,6 @@ int main(int argc, char **argv)
 			errorSum += error;
 
 			double pidOutput = KP * error + KI * errorSum + KD * errorDif;
-			std::cout << pidOutput << std::endl;
 			if (BASE_VEL + pidOutput > MAX_VEL)
 			{
 				pidOutput = MAX_VEL - BASE_VEL;
@@ -101,8 +99,6 @@ int main(int argc, char **argv)
 
 			if (leftVel < MIN_VEL) leftVel = MIN_VEL;
 			if (rightVel < MIN_VEL) rightVel = MIN_VEL;
-
-			std::cout << leftVel << " " << rightVel << std::endl;
 
 			robot.setVel2(leftVel, rightVel);
 		}
