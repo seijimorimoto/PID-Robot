@@ -6,9 +6,9 @@ const int DESIRED_DIST = 500;
 //const int MAX_HISTORY = 10;
 const double MAX_VEL = 2000;
 const double MIN_VEL = 0;
-const double KP = 0.6;
-const double KI = 0.001;
-const double KD = 0.2;
+const double KP = 0.4;
+const double KI = 0.0005;
+const double KD = 0.1;
 
 
 int main(int argc, char **argv)
@@ -37,6 +37,8 @@ int main(int argc, char **argv)
 	int errorSum = 0;
 	unsigned int distances[4];
 
+	ArUtil::sleep(7000);
+
 	while (true)
 	{
 		bool badReadings[4] = { false, false, false, false };
@@ -45,7 +47,7 @@ int main(int argc, char **argv)
 		// Get sonar readings for right sensors (4 to 7).
 		for (int i = 0; i < 4; i++)
 		{
-			sonarSensor[i] = robot.getSonarReading(i+4);
+			sonarSensor[i] = robot.getSonarReading(i + 4);
 			distances[i] = sonarSensor[i]->getRange();
 
 			// If the sensor reading is above or equal to 5000, mark it as a bad reading and
@@ -72,7 +74,7 @@ int main(int argc, char **argv)
 
 			// Calculate current error.
 			int error = DESIRED_DIST - distanceMin;
-			//if (error < -500) error = -500;
+			if (error < -500) error = -500;
 
 			// Calculate the error difference.
 			const int errorDif = error - errorPrev;
@@ -101,7 +103,7 @@ int main(int argc, char **argv)
 			if (rightVel < MIN_VEL) rightVel = MIN_VEL;
 
 			std::cout << leftVel << " " << rightVel << std::endl;
-			
+
 			robot.setVel2(leftVel, rightVel);
 		}
 
